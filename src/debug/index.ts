@@ -1,5 +1,5 @@
 import ReconnectingWebSocket from "reconnecting-websocket";
-import WebSocket, { CloseEvent, MessageEvent } from "ws"; // Import the WebSocket implementation for Node.js
+import WebSocket, { CloseEvent } from "ws"; // Import the WebSocket implementation for Node.js
 
 export interface ISelect<T = string> {
   label: string;
@@ -26,7 +26,7 @@ const onClose = (e: CloseEvent) => {
   }
 };
 
-const onMessage = (event: MessageEvent) => {
+const onMessage = (event: globalThis.MessageEvent) => {
   // Ping returns just account address, if we get that
   // response we don't need to log anything
   if (event.data !== selectedAccount?.value) {
