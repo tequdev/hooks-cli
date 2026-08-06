@@ -53,7 +53,7 @@ export async function buildCDir(
   // Reading all files in the directory tree
   let fileObjects: FileObject[];
   try {
-    fileObjects = readFiles(dirPath);
+    fileObjects = readFiles(dirPath).filter((file) => file.type === "c");
   } catch (error: unknown) {
     console.error(`Error reading files: ${error}`);
     process.exit(1);
