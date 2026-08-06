@@ -11,3 +11,5 @@ hooks-toolkit-cli-linux
 hooks-toolkit-cli-macos
 hooks-toolkit-cli-win.exe
 myproj/
+
+src/init/**/yarn.lock

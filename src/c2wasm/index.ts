@@ -18,6 +18,32 @@ interface BuildResult {
   tasks: Task[];
 }
 
+const getCustomHeader = (headersPath: string | undefined): FileObject[] => {
+  let headerObjects: FileObject[] = [];
+  if (headersPath) {
+    try {
+      headerObjects = readFiles(headersPath).filter(
+        (file) => file.type === "h"
+      );
+    } catch (error: unknown) {
+      console.error(`Error reading header files: ${error}`);
+      process.exit(1);
+    }
+    if (headerObjects.length === 0) {
+      console.log("No header files detected, using default headers...");
+      console.warn(
+        "In the feature version, default headers will not be provided. Please provide your own headers."
+      );
+    }
+  } else {
+    console.log("No header path specified, using default headers...");
+    console.warn(
+      "In the feature version, default headers will not be provided. Please provide your own headers."
+    );
+  }
+  return headerObjects;
+};
+
 export async function buildCDir(
   dirPath: string,
   outDir: string,
@@ -33,22 +59,7 @@ export async function buildCDir(
     process.exit(1);
   }
 
-  let headerObjects: FileObject[] = [];
-  if (headersPath) {
-    try {
-      headerObjects = readFiles(headersPath).filter(
-        (file) => file.type === "h"
-      );
-    } catch (error: unknown) {
-      console.error(`Error reading header files: ${error}`);
-      process.exit(1);
-    }
-    if (headerObjects.length === 0) {
-      console.log("No header files detected, using default headers...");
-    }
-  } else {
-    console.log("No header path specified, using default headers...");
-  }
+  const headerObjects = getCustomHeader(headersPath);
 
   // Building wasm for each file object
   await Promise.all(
@@ -83,20 +94,7 @@ export async function buildFile(
     name: filename,
     src: fileContent,
   };
-  let headerObjects: FileObject[] = [];
-  if (headerPath) {
-    try {
-      headerObjects = readFiles(headerPath).filter((file) => file.type === "h");
-    } catch (error: unknown) {
-      console.error(`Error reading header files: ${error}`);
-      process.exit(1);
-    }
-    if (headerObjects.length === 0) {
-      console.log("No header files detected, using default headers...");
-    }
-  } else {
-    console.log("No header path specified, using default headers...");
-  }
+  const headerObjects = getCustomHeader(headerPath);
   try {
     await buildWasm(fileObject, headerObjects, outDir, isXRPL);
   } catch (error) {
