@@ -184,6 +184,7 @@ describe("Init Tests", () => {
           hookapi: "hookapi",
           macro: "macro",
           sfcodes: "sfcodes",
+          tts: "",
         },
       });
 

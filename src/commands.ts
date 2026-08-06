@@ -26,20 +26,17 @@ const downloadCHeaderFiles = async (
   compileHost: string,
   projectDir: string
 ): Promise<void> => {
-  const headerNames = [
-    "error",
-    "extern",
-    "hookapi",
-    "macro",
-    "sfcodes",
-    "tts",
-  ] as const;
   const response = await axios.get(
     `${compileHost.replace(/\/+$/, "")}/api/header-files`
   );
   const headerFiles = response.data;
   if (!headerFiles || typeof headerFiles !== "object") {
     throw Error("Invalid header files response from the compile server");
+  }
+
+  const headerNames = Object.keys(headerFiles);
+  if (headerNames.length === 0) {
+    throw Error("No header files returned from the compile server");
   }
 
   const files = headerNames.map((name) => {
